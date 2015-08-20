@@ -3,6 +3,7 @@ class PushesController < ApplicationController
   before_action :require_user
 
   def index
+    @pushes = Push.all
   end
 
   def new

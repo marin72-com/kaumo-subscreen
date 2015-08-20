@@ -1,1 +1,11 @@
-<%= link_to 'BUTTON', pushes_path, method: :post %>
+<h1>Pushes index</h1>
+
+<ul>
+  <% @pushes.each do |push| %>
+    <li>
+      <%= push.user_id %>
+      <%= push.updated_at %>
+     </li>
+  <% end %>
+</ul>
+
