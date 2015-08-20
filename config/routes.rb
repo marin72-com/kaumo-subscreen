@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :pushes, only: %i(create index)
   root to: 'welcome#index'
 
   get '/auth/:provider/callback' => 'sessions#create'
