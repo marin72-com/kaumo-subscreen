@@ -1,11 +1,46 @@
 <h1>Pushes index</h1>
 
-<ul>
-  <% @pushes.each do |push| %>
-    <li>
-      <%= push.user_id %>
-      <%= push.updated_at %>
-     </li>
-  <% end %>
-</ul>
+<div class="pushes">
+</div>
 
+<script>
+  var NAME = 'last_id';
+  var n = getCookie(NAME);
+  $.getJSON('/pushes.json',
+  {NAME: n},
+  function(data){
+    if (data.length == 0){
+      console.log("data is null");
+      return;
+    }
+    for (var i = 0, len = data.length; i < len; i++){
+      console.log(data[i].user.image_url);
+      d = data[i].user.image_url;
+      $(".pushes").append("<img src='"+d+"' width='150' height='150'>");
+    }
+    var last = data[data.length - 1];
+    setCookie(NAME, String(last.id));
+  });
+  function setCookie(name, val) {
+    var extime = new Date().getTime();
+    var cltime = new Date(extime + (60*60*24*1000*3));
+    var exdate = cltime.toUTCString();
+    var s = name + "=" + escape(val) + ";expires=" + exdate + ";";
+    console.log("SET NOW" + name + " " + val);
+    document.cookie = name + "=" + escape(val) + ";expires=" + exdate + ";";
+    console.log(document.cookie);
+  }
+  function getCookie(name){
+    var s = document.cookie;
+    if (s.length <= 0) return 0;
+    var st = s.indexOf(name + "=");
+    if (st != -1){
+      st = st + name.length + 1;
+      var ed = s.indexOf(";", st);
+      if (ed == -1) ed=s.length;
+      console.log("GET NOWlast_id " + s.substring(st, ed));
+      return unescape(s.substring(st, ed));
+    }
+    return 0;
+  }
+</script>
