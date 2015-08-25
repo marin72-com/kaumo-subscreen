@@ -1,66 +1,98 @@
-<h1>Pushes index</h1>
 
 <div class="pushes">
 </div>
 
 <script>
-  // CONST
-  //var IMGN = data.length;
-  var OPA = 0.8;
-  var TP = 30;
-  var LP = 0;
-  var DOC_WIDTH = document.documentElement.clientWidth/4;
-  var DOC_HEIGHT = document.documentElement.clientHeight;
-  var NAME = 'last_id';
-  // set random image
-  function random_image(data){
-    console.log("koko");
-    for (var i = 0, len = data.length; i < len; i++){
-      var xpx = Math.floor(DOC_WIDTH*Math.random()) + LP;
-      var ypx = Math.floor(DOC_HEIGHT*Math.random()) + TP;
-      var d = data[i].user.image_url;
-      var str = "<div STYLE='position:absolute;left:"+ xpx +"px;top:"+ ypx +"px;z-index:-1;OPAcity:"+OPA+";'><img src='"+d+"'></div>";
-      $(".pushes").append(str);
-    }
-  }
-  // LOOP function
-  $(function() {
-    setInterval(function() {
+  jQuery(function($) {
+    // CONST
+    //var IMGN = data.length;
+    var OPA = 0.8;
+    var TP = 30;
+    var LP = 0;
+    var DOC_WIDTH = document.documentElement.clientWidth;
+    var DOC_HEIGHT = document.documentElement.clientHeight;
+    var NAME = 'last_id';
+
+    // cookies
+    var setCookie = function(name, val) {
+      var extime = new Date().getTime();
+      var cltime = new Date(extime + (60*60*24*1000*3));
+      var exdate = cltime.toUTCString();
+      var s = name + "=" + encodeURIComponent(val) + ";expires=" + exdate + ";";
+      console.log("SET NOW" + name + " " + val);
+      document.cookie = name + "=" + encodeURIComponent(val) + ";expires=" + exdate + ";";
+      console.log(document.cookie);
+    };
+
+    var getCookie = function(name){
+      var s = document.cookie;
+      if (s.length <= 0) return 0;
+      var st = s.indexOf(name + "=");
+      if (st != -1){
+        st = st + name.length + 1;
+        var ed = s.indexOf(";", st);
+        if (ed == -1) ed=s.length;
+        console.log("GET NOWlast_id " + s.substring(st, ed));
+        return decodeURIComponent(s.substring(st, ed));
+      }
+      return 0;
+    };
+
+    // LOOP function
+    var fetchPushes = function() {
       var n = getCookie(NAME);
       $.getJSON('/pushes.json',
-      {NAME: n},
+      {"last_id": n},
       function(data){
         if (data.length == 0){
           console.log("data is null");
           return;
         }
-        random_image(data);
+        showPushes(data);
 
         var last = data[data.length - 1];
         setCookie(NAME, String(last.id));
       });
-    }, 1000);
+    };
+
+    // set random image
+    var showPushes = function(pushes){
+      console.log("koko");
+      pushes.forEach(function(push) {
+        var xpx = Math.floor((DOC_WIDTH/4)*Math.random()) + LP;
+        var ypx = Math.floor(DOC_HEIGHT*Math.random()) + TP;
+        var d = push.user.image_url;
+
+        var elem = $("<div>")
+          .css('position', 'absolute')
+          .css('left', xpx.toString() + "px")
+          .css('top', ypx.toString() + "px")
+          .css('z-index', 1)
+          .css('opacity', OPA);
+
+        elem.append($('<img>').attr('src', d));
+
+        $(".pushes").append(elem);
+        animateImage(elem);
+      });
+    };
+    
+    // animate
+    var animateImage = function(image){
+      image.animate(
+        {left: DOC_WIDTH.toString() + "px" },
+        {
+          queue: false,
+          duration: 3000,
+          complete: function() {
+            image.remove();
+          }
+        }
+      );
+
+      image.animate({top: Math.floor(DOC_HEIGHT*Math.random())}, 3000);
+    };
+
+    setInterval(fetchPushes, 500);
   });
-  function setCookie(name, val) {
-    var extime = new Date().getTime();
-    var cltime = new Date(extime + (60*60*24*1000*3));
-    var exdate = cltime.toUTCString();
-    var s = name + "=" + escape(val) + ";expires=" + exdate + ";";
-    console.log("SET NOW" + name + " " + val);
-    document.cookie = name + "=" + escape(val) + ";expires=" + exdate + ";";
-    console.log(document.cookie);
-  }
-  function getCookie(name){
-    var s = document.cookie;
-    if (s.length <= 0) return 0;
-    var st = s.indexOf(name + "=");
-    if (st != -1){
-      st = st + name.length + 1;
-      var ed = s.indexOf(";", st);
-      if (ed == -1) ed=s.length;
-      console.log("GET NOWlast_id " + s.substring(st, ed));
-      return unescape(s.substring(st, ed));
-    }
-    return 0;
-  }
 </script>
