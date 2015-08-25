@@ -5,21 +5,25 @@
 
 <script>
   var NAME = 'last_id';
-  var n = getCookie(NAME);
-  $.getJSON('/pushes.json',
-  {NAME: n},
-  function(data){
-    if (data.length == 0){
-      console.log("data is null");
-      return;
-    }
-    for (var i = 0, len = data.length; i < len; i++){
-      console.log(data[i].user.image_url);
-      d = data[i].user.image_url;
-      $(".pushes").append("<img src='"+d+"' width='150' height='150'>");
-    }
-    var last = data[data.length - 1];
-    setCookie(NAME, String(last.id));
+  $(function() {
+    setInterval(function() {
+      var n = getCookie(NAME);
+      $.getJSON('/pushes.json',
+      {NAME: n},
+      function(data){
+        if (data.length == 0){
+          console.log("data is null");
+          return;
+        }
+        for (var i = 0, len = data.length; i < len; i++){
+          console.log(data[i].user.image_url);
+          d = data[i].user.image_url;
+          $(".pushes").append("<img src='"+d+"' width='150' height='150'>");
+        }
+        var last = data[data.length - 1];
+        setCookie(NAME, String(last.id));
+      });
+    }, 3000);
   });
   function setCookie(name, val) {
     var extime = new Date().getTime();
