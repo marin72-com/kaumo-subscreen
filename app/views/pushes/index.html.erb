@@ -11,7 +11,6 @@
     var LP = 0;
     var DOC_WIDTH = document.documentElement.clientWidth;
     var DOC_HEIGHT = document.documentElement.clientHeight;
-    var NAME = 'last_id';
 
     // cookies
     var setCookie = function(name, val) {
@@ -25,32 +24,44 @@
 
     var getCookie = function(name){
       var s = document.cookie;
-      if (s.length <= 0) return 0;
+      if (s.length <= 0) {
+        console.log("Cookie is empty");
+        len = getLastId;
+        return len;
+      }
       var st = s.indexOf(name + "=");
       if (st != -1){
         st = st + name.length + 1;
         var ed = s.indexOf(";", st);
         if (ed == -1) ed=s.length;
-        console.log("GET NOW last_id " + s.substring(st, ed));
         return decodeURIComponent(s.substring(st, ed));
       }
       return 0;
     };
 
+    var getLastId = function(){
+      $.getJSON('/pushes.json',
+      function(data){
+        if (data.length == 0) return 0;
+        var last = data[data.length - 1];
+        setCookie('last_id', String(last.id));
+        return String(last.id);
+      });
+    }
+
     // LOOP function
     var fetchPushes = function() {
-      var n = getCookie(NAME);
+      var n = getCookie('last_id');
       $.getJSON('/pushes.json',
-      {"last_id": n},
+      {'last_id': n},
       function(data){
         if (data.length == 0){
-          console.log("data is null");
           return;
         }
         showPushes(data);
 
         var last = data[data.length - 1];
-        setCookie(NAME, String(last.id));
+        setCookie('last_id', String(last.id));
       });
     };
 
