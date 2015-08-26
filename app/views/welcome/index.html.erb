@@ -1,3 +1,8 @@
 <h1>Kaumo Subscreen</h1>
-<p>Please login facebook or twitter</p>
+
+<% if logged_in? %>
+  <p><%= link_to "Let's push button", new_push_path %></p>
+<% else %>
+  <p>Please login facebook or twitter</p>
+<% end %>
 
