@@ -38,5 +38,17 @@
     <% end %>
     <%= yield %>
   </div>
+  
+  <div id="footer" style="text-align:center" font size="1">
+    <p>©marin72_com, All rights reserved.</p> 
+  </div>
 </body>
 </html>
+
+<script>
+  $("#footer")
+  .css('position', 'absolute')
+  .css('bottom', 0)
+  .css('width', '100%')
+  .css('height', '50px');
+</script>
