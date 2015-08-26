@@ -3,7 +3,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     ENV["TWITTER_CONSUMER_KEY"],
     ENV["TWITTER_CONSUMER_SECRET"]
 
-  if Rails.env.developments?
+  if Rails.env.development?
     provider :facebook,
       ENV["FACEBOOK_CONSUMER_KEY"],
       ENV["FACEBOOK_CONSUMER_SECRET"]
