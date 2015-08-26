@@ -19,9 +19,8 @@
       var cltime = new Date(extime + (60*60*24*1000*3));
       var exdate = cltime.toUTCString();
       var s = name + "=" + encodeURIComponent(val) + ";expires=" + exdate + ";";
-      console.log("SET NOW" + name + " " + val);
+      console.log("SET NOW " + name + " " + val);
       document.cookie = name + "=" + encodeURIComponent(val) + ";expires=" + exdate + ";";
-      console.log(document.cookie);
     };
 
     var getCookie = function(name){
@@ -32,7 +31,7 @@
         st = st + name.length + 1;
         var ed = s.indexOf(";", st);
         if (ed == -1) ed=s.length;
-        console.log("GET NOWlast_id " + s.substring(st, ed));
+        console.log("GET NOW last_id " + s.substring(st, ed));
         return decodeURIComponent(s.substring(st, ed));
       }
       return 0;
@@ -57,7 +56,6 @@
 
     // set random image
     var showPushes = function(pushes){
-      console.log("koko");
       pushes.forEach(function(push) {
         var xpx = Math.floor((DOC_WIDTH/4)*Math.random()) + LP;
         var ypx = Math.floor(DOC_HEIGHT*Math.random()) + TP;
